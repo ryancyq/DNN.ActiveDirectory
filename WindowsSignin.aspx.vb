@@ -47,7 +47,11 @@ Namespace DotNetNuke.Authentication.ActiveDirectory
                 Configuration.ResetConfig()
                 Dim config As Configuration = Configuration.GetConfig()
                 If (config.WindowsAuthentication Or config.HideWindowsLogin) Then
-                    objAuthentication.AuthenticationLogon()
+                    Dim IsAuthenticated As Boolean = objAuthentication.AuthenticationLogon(False)
+                    If (Not IsAuthenticated) Then
+                        Me.plUnAuthorized.Visible = True
+                        Me.plSetIIS.Visible = False
+                    End If
                 Else
                     Me.plNoAuthentication.Visible = True
                     Me.plSetIIS.Visible = False

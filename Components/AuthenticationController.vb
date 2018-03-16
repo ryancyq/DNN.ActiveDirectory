@@ -62,9 +62,9 @@ Namespace DotNetNuke.Authentication.ActiveDirectory
         '''     [mhorton]     12/07/2008  ACD-7488
         ''' </history>
         ''' -------------------------------------------------------------------
-        Public Sub AuthenticationLogon()
+        Public Function AuthenticationLogon(ByVal RedirectOnAuthenticationFailed As Boolean) As Boolean
             Dim objAuthUserController As New UserController
-            Dim objReturnUser As UserInfo
+            Dim objReturnUser As UserInfo = Nothing
             Dim loggedOnUserName As String = HttpContext.Current.Request.ServerVariables(Configuration.LOGON_USER_VARIABLE)
             Dim loginStatus As UserLoginStatus = UserLoginStatus.LOGIN_FAILURE
 
@@ -120,27 +120,33 @@ Namespace DotNetNuke.Authentication.ActiveDirectory
                     objEventLogInfo.LogTypeKey = "LOGIN_SUCCESS"
 
                     objEventLog.AddLog(objEventLogInfo)
+                Else
 
                 End If
             Else
                 ' Not Windows Authentication
             End If
 
-            'Updated to redirect to querrystring passed in prior to authentication
-            Dim querystringparams As String = "logon=" & DateTime.Now.Ticks.ToString()
-            Dim strUrl As String = NavigateURL(_portalSettings.ActiveTab.TabID, String.Empty, querystringparams)
+            If ((objReturnUser IsNot Nothing) OrElse (RedirectOnAuthenticationFailed)) Then
+                'Updated to redirect to querrystring passed in prior to authentication
+                Dim querystringparams As String = "logon=" & DateTime.Now.Ticks.ToString()
+                Dim strUrl As String = NavigateURL(_portalSettings.ActiveTab.TabID, String.Empty, querystringparams)
 
-            If Not HttpContext.Current.Request.Cookies("DNNReturnTo") Is Nothing _
-                Then
-                querystringparams =
-                    HttpContext.Current.Request.Cookies("DNNReturnTo").Value
-                'ACD-8445
-                If querystringparams <> String.Empty Then querystringparams = querystringparams.ToLower
-                If querystringparams <> String.Empty And querystringparams.IndexOf("windowssignin.aspx") < 0 Then _
-                    strUrl = querystringparams
+                If Not HttpContext.Current.Request.Cookies("DNNReturnTo") Is Nothing _
+                    Then
+                    querystringparams =
+                        HttpContext.Current.Request.Cookies("DNNReturnTo").Value
+                    'ACD-8445
+                    If querystringparams <> String.Empty Then querystringparams = querystringparams.ToLower
+                    If querystringparams <> String.Empty And querystringparams.IndexOf("windowssignin.aspx") < 0 Then _
+                        strUrl = querystringparams
+                End If
+                HttpContext.Current.Response.Redirect(strUrl, True)
             End If
-            HttpContext.Current.Response.Redirect(strUrl, True)
-        End Sub
+
+            Return (objReturnUser IsNot Nothing)
+
+        End Function
 
         ''' -------------------------------------------------------------------
         ''' <summary>
