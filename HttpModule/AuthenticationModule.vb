@@ -99,9 +99,13 @@ Namespace DotNetNuke.Authentication.ActiveDirectory.HttpModules
                                                                                (Configuration.AUTHENTICATION_LOGOFF_PAGE) _
                                                                                   .ToLower) > -1)
                 SetDnnReturnToCookie(request, response, portalSettings)
-                Dim blnUserLogin = Not Users.UserController.Instance.GetCurrentUserInfo().Username = String.Empty
-                Dim blnWinProcess As Boolean = authStatus = AuthenticationStatus.WinProcess AndAlso Not blnWinLogon AndAlso Not blnWinLogoff
-                If (authStatus = AuthenticationStatus.Undefined) OrElse (blnWinProcess) OrElse (Not blnUserLogin) Then
+                Dim blnAnonymous As Boolean = Users.UserController.Instance.GetCurrentUserInfo().Username = String.Empty
+                Dim blnWinProcess As Boolean = authStatus = AuthenticationStatus.WinProcess
+
+                'when url request is not login/logoff page and (AuthenticationStatus = WinProcess or user not logged in)
+                Dim blnLoginRequired As Boolean = (Not (blnWinLogon OrElse blnWinLogoff)) AndAlso (blnWinProcess OrElse blnAnonymous)
+
+                If (authStatus = AuthenticationStatus.Undefined) OrElse (blnLoginRequired) Then
                     AuthenticationController.SetStatus(portalSettings.PortalId, AuthenticationStatus.WinProcess)
                     Dim url As String = request.RawUrl
                     Dim arrAutoIp() = config.AutoIP.Split(";")
@@ -111,15 +115,15 @@ Namespace DotNetNuke.Authentication.ActiveDirectory.HttpModules
                         Dim strAutoIp As String = arrAutoIp(intCount)
                         If (InStr(strAutoIp, "-")) Then
                             Dim arrIpRange() = strAutoIp.Split("-")
-                            Dim lClientIp As Long = IPAddressToLong(strClientIp)
+                            Dim lClientIp As Long = IpAddressToLong(strClientIp)
                             If _
-                                lClientIp >= IPAddressToLong(Utilities.GetIP4Address(Trim(arrIpRange(0)))) And _
-                                lClientIp <= IPAddressToLong(Utilities.GetIP4Address(Trim(arrIpRange(1)))) Then
+                                lClientIp >= IpAddressToLong(Utilities.GetIP4Address(Trim(arrIpRange(0)))) And
+                                lClientIp <= IpAddressToLong(Utilities.GetIP4Address(Trim(arrIpRange(1)))) Then
                                 url = GetRedirectUrl(request)
                                 Exit For
                             End If
                         ElseIf _
-                            (Not InStr(Left(strClientIp.ToString, strAutoIp.Length), strAutoIp) = 0) Or _
+                            (Not InStr(Left(strClientIp.ToString, strAutoIp.Length), strAutoIp) = 0) Or
                             (strAutoIp = "") Then
                             url = GetRedirectUrl(request)
                             Exit For
