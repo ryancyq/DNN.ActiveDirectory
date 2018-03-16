@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\..\bin\Providers\</OutputPath>
+    <OutputPath>bin\Providers\</OutputPath>
     <DocumentationFile>DotNetNuke.Authentication.ActiveDirectory.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -51,7 +51,7 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\bin\Providers\</OutputPath>
+    <OutputPath>bin\Providers\</OutputPath>
     <DocumentationFile>DotNetNuke.Authentication.ActiveDirectory.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -60,7 +60,7 @@
   <ItemGroup>
     <Reference Include="DotNetNuke, Version=8.0.4.226, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Sites\dnndev7\bin\DotNetNuke.dll</HintPath>
+      <HintPath>bin\DotNetNuke.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
