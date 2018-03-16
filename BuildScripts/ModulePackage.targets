@@ -11,7 +11,7 @@
       <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\AssemblyInfo.vb" />
       <dnnFile Include="$(MSBuildProjectDirectory)\*.dnn" />
     </ItemGroup>
-    <Version BuildType="None" RevisionType="Increment" VersionFile="version.txt" StartDate="12/24/2008">
+    <Version BuildType="None" RevisionType="Increment" VersionFile="version.txt" StartDate="12/4/2008">
       <Output TaskParameter="Major" PropertyName="Major" />
       <Output TaskParameter="Minor" PropertyName="Minor" />
       <Output TaskParameter="Build" PropertyName="Build" />
