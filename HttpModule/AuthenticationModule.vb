@@ -94,13 +94,14 @@ Namespace DotNetNuke.Authentication.ActiveDirectory.HttpModules
                     blnWinLogon As Boolean = _
                         (request.RawUrl.ToLower.IndexOf((Configuration.AUTHENTICATION_LOGON_PAGE).ToLower) > -1)
                 Dim blnWinLogoff As Boolean = (authStatus = AuthenticationStatus.WinLogon) _
-                                              AndAlso _
-                                              (request.RawUrl.ToLower.IndexOf( _
+                                              AndAlso
+                                              (request.RawUrl.ToLower.IndexOf(
                                                                                (Configuration.AUTHENTICATION_LOGOFF_PAGE) _
                                                                                   .ToLower) > -1)
                 SetDnnReturnToCookie(request, response, portalSettings)
+                Dim blnUserLogin = Not Users.UserController.Instance.GetCurrentUserInfo().Username = String.Empty
                 Dim blnWinProcess As Boolean = authStatus = AuthenticationStatus.WinProcess AndAlso Not blnWinLogon AndAlso Not blnWinLogoff
-                If (authStatus = AuthenticationStatus.Undefined) OrElse (blnWinProcess) Then
+                If (authStatus = AuthenticationStatus.Undefined) OrElse (blnWinProcess) OrElse (blnUserLogin) Then
                     AuthenticationController.SetStatus(portalSettings.PortalId, AuthenticationStatus.WinProcess)
                     Dim url As String = request.RawUrl
                     Dim arrAutoIp() = config.AutoIP.Split(";")
